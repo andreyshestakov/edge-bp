@@ -1,0 +1,336 @@
+tosca_definitions_version: cloudify_dsl_1_3
+imports:
+  - 'http://www.getcloudify.org/spec/cloudify/4.1/types.yaml'
+  - >-
+    https://raw.githubusercontent.com/cloudify-incubator/cloudify-kubernetes-plugin/master/plugin.yaml
+inputs:
+  k8s_config:
+    description: kubeconfig
+    default:
+        apiVersion: v1
+        clusters:
+          - cluster:
+              certificate-authority-data: >-
+                LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZ6ekNDQTdlZ0F3SUJBZ0lJZTNzSFVmaFltT3d3RFFZSktvWklodmNOQVFFTEJRQXdTakVMTUFrR0ExVUUKQmhNQ1kzb3hGekFWQmdOVkJBTU1EbE5oYkhRZ1RXRnpkR1Z5SUVOQk1ROHdEUVlEVlFRSERBWlFjbUZuZFdVeApFVEFQQmdOVkJBb01DRTFwY21GdWRHbHpNQjRYRFRFNE1ERXdOVEU1TlRnd01sb1hEVEk0TURFd016RTVOVGd3Ck1sb3dTakVMTUFrR0ExVUVCaE1DWTNveEZ6QVZCZ05WQkFNTURsTmhiSFFnVFdGemRHVnlJRU5CTVE4d0RRWUQKVlFRSERBWlFjbUZuZFdVeEVUQVBCZ05WQkFvTUNFMXBjbUZ1ZEdsek1JSUNJakFOQmdrcWhraUc5dzBCQVFFRgpBQU9DQWc4QU1JSUNDZ0tDQWdFQXN1ZGdSdXQydHdmenpZeHNMQTN5YURSeklzSnZMNWh0RHJSVHFXRFVBVEJiCjgzSWplMjBpM2J0SkI1L1hjRVpGRVErSzM3Ry9nYi9kRnZvNnh6R2RFY3RzN2tJYlk0d0RVb09hRWJmVjNYVHQKcXlUSWxlQXR5Yis2amhxK2pNZExFZ0phZjZnWWpxQ1ZDSks3RjUwclA5RFo1bVArdDVDbC94NDZjUVNnTWFQQgp6cGNzZ3dFV2YvWHRRTFRJc2h0RGp3QmthVWlmN0V0SEg3TGhUQndWNWVDQTBwVW1zZjZnNjZwMVJuenYyWGRYCit6UENDSmU0YUE5Z3dNYjJMVVN2SmpTbXJ3VTlTbkQwRWluWXBHUTBSWndJRExFNEYweEx5ampuR1Y4dGdlNGIKMmM3Y0RwU3h2WFA1VVhOVW56b0EyTnZPMUc3eWFsZnRQbk9WRkRMY3p0N0ZKNnExMUtzdXd4dzMwL3RrVHdVbAprbC9SdGpUTUUwdFNEOXlRVk53d3VpUzh4OFczZUVFUkZsWFFidForaEVseEdOQjhINXBXaWx1d3pyT0ZKVEhsCmQ2Sjg0RkozN003MDFVaWpxRGFNbDdjbHRCeCs5TlRNendBaFdBZGkvUmZIYllCUld3eFFGQlZFRldlVDllUDkKbXZWM3Y5Nk81d0QvSGxqS1M4RmpoY09sOVpqNVdNVmR5RDVPRDdyM0Yzb3E0Y1RvcDNjbk4wQ01Qak8yWlpiQwpLSXJPbWppcnZMS2gveUUxTTh0blpVMkNmNU5RQVhoUVpqWUpVNlkrWXA3V3QyelVlK05wbkN5Mjl3d2RNaHBJClEzZTN3NERFdEVQUWFrZEpjaVczTE5abW9yWDZXRWY1L1RzVTd3b0JXcWNoMDJiQllkOVA0cm0xcFZKemM1MEMKQXdFQUFhT0J1RENCdFRBTUJnTlZIUk1FQlRBREFRSC9NQXNHQTFVZER3UUVBd0lCQmpBZEJnTlZIUTRFRmdRVQpqcnI4ZkJONzdDSFBLaDljNE1WZm1GZWxQSkl3ZVFZRFZSMGpCSEl3Y0lBVWpycjhmQk43N0NIUEtoOWM0TVZmCm1GZWxQSktoVHFSTU1Fb3hDekFKQmdOVkJBWVRBbU42TVJjd0ZRWURWUVFEREE1VFlXeDBJRTFoYzNSbGNpQkQKUVRFUE1BMEdBMVVFQnd3R1VISmhaM1ZsTVJFd0R3WURWUVFLREFoTmFYSmhiblJwYzRJSWUzc0hVZmhZbU93dwpEUVlKS29aSWh2Y05BUUVMQlFBRGdnSUJBRnFybkRDeUdMNThVdk1XT09uNHhQQzU0RjY5cjFvSUdGWGtLbSttCk1qMkIzT2UrU010S012aVJ4KzYwazFQb2JJazU1T0FndFdkbit0R3lOLzR6ckZzZERFd0ptckxZdlJTNEQyWjMKMmljdjhWSVRKYlE2V3hVQkgyNUg4dE1sbUxLQkZydStZYlVsRzU2cC9xWEY0U0hjMTl1ODA0dUx1NWRuWDBGcgo3Y2haWHQ2UW9sYkFRWlRzd0Zmd1NLK3pGZDZCdGorQ0FicjVEWFRJOHVlVHIrVjhnWEZ5SGViTTBlRGNzUGRZCnZKZGZvM21ZajlRVXRHcFhSdHZ5YmZ0ZkY4eEl3Z09tNnBpb0VTNkZ4TnJoK2FibExnZXNZb05EeTUzeEltRmkKWmptVUJ3LzMxN0lCZzJsTklmdXA1MnloYzBQQXp1Qll3d01QYnFOQWdIODNGd25yTlNiQ09aaDYxYzd2SmQ3SQpOc0RWUVVyOUdldlVhcW9nRGk0RGduYzh6Y2lkSDdBR0U3VXhiVjNKaGpTSlhtVWhMVXE4ejExNkFsbkJvdk5FCkQyS3UwSm50Q2VvMUZ5MXFUcG9hTjZHYWdRdUhvTTNsKzRPS0xia2pFMFZ4amkwVlpQOEk2WHhnVXRpSlhvUG0KbEVoS1JUeUFEQVhKdUY0Y3BMVWxMRlgzRlhHdXVFYWhWV1dRMFFGSFoyc3FJTHFCaFdVOUlYcUpEVEF6K3JoNgpuSkk3K0lrWWtSUXFybXpvdWV4RDdTdmpBRFk2YUFDUFlvRkE4cmpjdTlsYmphbHdNM1FrTzFGM2xmTjczdExRCkREMUlDcnUwdkZ3QWpXUTdYZXc0aTF2aytyREprZmI5c0lNUGJvMng1dEQvSTZrZ2hSdnFhaTRKdUQ5Q082TlEKZjhnNQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+              server: 'https://172.16.10.253:443'
+            name: k8s-ha-contrail
+        contexts:
+          - context:
+              cluster: k8s-ha-contrail
+              user: admin-k8s-ha-contrail
+            name: k8s-ha-contrail
+        current-context: k8s-ha-contrail
+        users:
+          - name: admin-k8s-ha-contrail
+            user:
+              client-certificate-data: >-
+                LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUdLekNDQkJPZ0F3SUJBZ0lKQVBqWDgvRlRPVVc4TUEwR0NTcUdTSWIzRFFFQkN3VUFNRW94Q3pBSkJnTlYKQkFZVEFtTjZNUmN3RlFZRFZRUUREQTVUWVd4MElFMWhjM1JsY2lCRFFURVBNQTBHQTFVRUJ3d0dVSEpoWjNWbApNUkV3RHdZRFZRUUtEQWhOYVhKaGJuUnBjekFlRncweE9EQXhNRGt4TmpRMk16VmFGdzB4T1RBeE1Ea3hOalEyCk16VmFNR1F4Q3pBSkJnTlZCQVlUQW1ONk1SVXdFd1lEVlFRS0RBeHplWE4wWlcwNmJtOWtaWE14R2pBWUJnTlYKQkFNTUVYTjVjM1JsYlRwdWIyUmxPbU4wYkRBeE1ROHdEUVlEVlFRSERBWlFjbUZuZFdVeEVUQVBCZ05WQkFvTQpDRTFwY21GdWRHbHpNSUlDSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQWc4QU1JSUNDZ0tDQWdFQXdVME9BWXVlCkIxS1BwVzVqTzdDT1NqL0R2c2tkdlpUOEtzZXBsZjVoNzQ2S0FJOEJPc2s2R2FBaTlJL1R2QlBwN3FyaDJha1YKQjlEa2xhZnNYUDdqVW5VNjlFMGVyVU9CL3BlTS9vTzR6elBjL0ZuWE16UjhxRUVKZFIvVUpjbjZwaGUyeTVoQwpoNmQ3dlB5dU1hL2RtQ3d2SWVTWDA0Vk0vQjBjNmhJNVJuTXRkenNraVphM2FSR3J1MndmTnpSdXlZNFhuYjRvCnFySEJscjZZMEoyT0h3dWRETUVoY25JdkhKLy9pQmwwTkFkdm13RjdzQ1NKVVJ3L2FpTGpxQ0pjQlhTdHJIV0QKVjBMUTJxeWpBam51Umd6NDUzTUhKakNVYVlhVXN6MnkwRDJxNVlPLzZINmxzdFlUb0lzZVhBSUt3MUNxV09HdQpGTlJ3V2hlcnpaWVQ4QkVLL1poL0NmU1Q0UXFaRzhMYUEyME5uS0NSZGtZL2g3RWE5TlMyYkFnWklkaXB4TnQ0CnR3YmkxVzhXa29OSHZaRnRWY1ZjdWo2WXJqK01zYVA4MUdhZ2llUGlyLzVEOHVxeHArRWtEd1BOYVVSMkZjVWMKbVQzdWpZWkR0SXc3Nk9CSytQSTVJclUzNkRLWkp0cGtXbkhRZ1dMbVRwTnFWZ1ZrMUdVSmRjWVZjdGtHMkx2TApwVU5uWnFGSm5sUi91WEUvRmpqdEY0UjdXcjBHSHR0TFRlL0JGa05TYUY1Y1Z4czQyQmdjMWhrbmpWUnZ0NTZSCllETXkyYjFPSnQwMURoaEZKelIvVVVlK1ptUUQ0SndwUlZxUEFuUFViUkNyeWM2SlJnZ3NrSlBBNnd1YUhIMzkKRTg3MnVncnRSbXIyNFc2R3VDTDVrUVRGQmhjaEtIc0NlNmtDQXdFQUFhT0IrVENCOWpBSkJnTlZIUk1FQWpBQQpNQTRHQTFVZER3RUIvd1FFQXdJRjREQVdCZ05WSFNVQkFmOEVEREFLQmdnckJnRUZCUWNEQWpBZEJnTlZIUTRFCkZnUVVpQ0VUQXpmL25lMW9VdzZta2hYTStKbFdOQ293ZVFZRFZSMGpCSEl3Y0lBVWpycjhmQk43N0NIUEtoOWMKNE1WZm1GZWxQSktoVHFSTU1Fb3hDekFKQmdOVkJBWVRBbU42TVJjd0ZRWURWUVFEREE1VFlXeDBJRTFoYzNSbApjaUJEUVRFUE1BMEdBMVVFQnd3R1VISmhaM1ZsTVJFd0R3WURWUVFLREFoTmFYSmhiblJwYzRJSWUzc0hVZmhZCm1Pd3dKd1lEVlIwUkJDQXdIb2NFckJBSy9ZY0V3S2dLWEljRXdLZ0tYWWNFd0tnS1c0Y0VDdjRBQVRBTkJna3EKaGtpRzl3MEJBUXNGQUFPQ0FnRUFRTFNvVGJ5bzcxWTgxRWhTYjlQMUR0RjZXTitWY3lIRVlDc0twN3d6azZScApDM3F6TE44WDI3eGIzMXdlZHRLcng3UnZsWW9UN2t1Wm9aazkyQS90R1JiUjlyME5YalNSMTc3NzhEWXZLTEx5CkcrY2tkVmhidDZodGhZWjd4NFdhQk9KNjA1L3J4QlBab1R2MXR3Sy81RTJOdjJXMExpVXZHelpXN2x6M2NIK3YKNGV2Q2VOTHhXbCtnYWRia1RNM3RSSVFtUHFlTW9qOW1McmdTR1NEeUNWOUNLbjhoMWFTZEsydzBUNVVLaWVrZgo5ZW5ES1ZJbVIreFFKUWpTdlAzWFU5NHNjYVNxSVVTZ3Y2cnFUZlQ0eTZ2Z2lDYTZDTzJ6OGZ2Z2ppc1dOUXpCCjM1T0VyWU81QmRoSnFrOXcxNW4wd3NvOUY0QjFUblhtUUhoUEFwRzJKTElnSnlPNTIrNHVBR2FKSTl4MzNQSkUKejNuVzIrTFlSYms3Z09MaU9BY3RlTE5oMlFCcXNYMmxVRk9GTGhxZzJhUThhenpFQjFrWVp0ZmFSSzhOOVhmVwpYRmhkQkN0bXh4dktnVGVwU01uRHJtOWxYWEVuRDFVSnhJNVN5eFBSeGpMWGxTWmdqZnljU2ZVQVoxNjVBdVhZCk9wZnN2UzFqdkxKQ1ZzbnltT3RBcHVNcVQ5TFFZQ0U2Tmt3WHNEWk5CNzFBMjRhNG9TdnJJZkJ4OHlKWlVnU2cKNmhVcGNkUTdzZERvaEZWUUZBVXNXeFBUYjZPcVcxSi9uOFVLRjJRQnlCMEs4SFpQei9ZR0hrVTdySU1DcG1TQQpoZW5xdElQdURQcGN6UEZ2eXRSWEJyUkxXaXlReWVuSEU4V0wvNjdISVRrNStid1R3RHFoZ3d0TWxaZlVHL289Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+              client-key-data: >-
+                LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlKS0FJQkFBS0NBZ0VBd1UwT0FZdWVCMUtQcFc1ak83Q09Tai9EdnNrZHZaVDhLc2VwbGY1aDc0NktBSThCCk9zazZHYUFpOUkvVHZCUHA3cXJoMmFrVkI5RGtsYWZzWFA3alVuVTY5RTBlclVPQi9wZU0vb080enpQYy9GblgKTXpSOHFFRUpkUi9VSmNuNnBoZTJ5NWhDaDZkN3ZQeXVNYS9kbUN3dkllU1gwNFZNL0IwYzZoSTVSbk10ZHpzawppWmEzYVJHcnUyd2ZOelJ1eVk0WG5iNG9xckhCbHI2WTBKMk9Id3VkRE1FaGNuSXZISi8vaUJsME5BZHZtd0Y3CnNDU0pVUncvYWlManFDSmNCWFN0ckhXRFYwTFEycXlqQWpudVJnejQ1M01ISmpDVWFZYVVzejJ5MEQycTVZTy8KNkg2bHN0WVRvSXNlWEFJS3cxQ3FXT0d1Rk5Sd1doZXJ6WllUOEJFSy9aaC9DZlNUNFFxWkc4TGFBMjBObktDUgpka1kvaDdFYTlOUzJiQWdaSWRpcHhOdDR0d2JpMVc4V2tvTkh2WkZ0VmNWY3VqNllyaitNc2FQODFHYWdpZVBpCnIvNUQ4dXF4cCtFa0R3UE5hVVIyRmNVY21UM3VqWVpEdEl3NzZPQksrUEk1SXJVMzZES1pKdHBrV25IUWdXTG0KVHBOcVZnVmsxR1VKZGNZVmN0a0cyTHZMcFVOblpxRkpubFIvdVhFL0ZqanRGNFI3V3IwR0h0dExUZS9CRmtOUwphRjVjVnhzNDJCZ2MxaGtualZSdnQ1NlJZRE15MmIxT0p0MDFEaGhGSnpSL1VVZStabVFENEp3cFJWcVBBblBVCmJSQ3J5YzZKUmdnc2tKUEE2d3VhSEgzOUU4NzJ1Z3J0Um1yMjRXNkd1Q0w1a1FURkJoY2hLSHNDZTZrQ0F3RUEKQVFLQ0FnQWRDQ2lwWE1IUVVic1hXcHYyMUE2YTRqYlJDYjI0d282WkVrSExNRmlmTlNaTzdTdC9HOGZwSDE4QQpvalZuMHduWWVidlFDQkFMaTNrNWJPNFlEWVF3MTBDU2ZwNno0U2ErQ1I3NC91bWIzU3M4ajNXOTBBMUU2L2V5CnFxUWZSTldyYW5aZTM3Qm1WV1pGUFNJZ2ZreG0xWVFDc0NXSmRFVGF2TGlpQXppczl4R0dEZER3QlQzb3Z1bXYKRFk4bXFHNVhRVXNVdXdHNm1WWDlBUVZNbDgxSHBtUGhEWVNyZnJES3VORVZMTldDRnZmUkxRalpyTE1mQm9JVAp1OGU3Y2VXbVFCN3hmdmpKKzFRSTg5TEx1ODJvb2J3a2J1ZE0raERnUklGQzVtcGIwbGMvZjJrc1R4RXQ2ZThxCnRwcEpzVmpTZXVRSzAySms2SDh6V01qSjZOZDNmTUNUNWpuQk91TVNYa2h0NkxyYWJITTI5QTNweFIxbHVCenQKUFFYcmVEemkwZDJsK0NhQzdTOTNYWmtjSTNRZTRicTRWMFIxZlg5NUl0b0xEZDdqMHV2SXZBckRJaVBBdmpjNApzb3JYaFNRdXQ2ZEdSclZpU0ExN1dSeXlwWTlaQTk4alowZEI2N2dqYTdvaVlob0l2dzc4SGpKcDV0aXRzR3dnCmlGQmJyRUFSSnVzbVVOT2EyTG9zdGNJbkZpaElvL3ZacFF0SzJDMXRJYk8rdmpVdmFKa0VtY3lpejFMME5oa0cKTkNQdjY1cG55d1plb1luUVBWNm0rZG0vZFJqZkQ4ZHhVT3BnRGtWTVRuSmd1UmhScEE5WlJHc2xIWjJuRXZVNgpRTTMwV3Q1b1hNN0t3T0YzSkhjeThyZVkrVnIzZlZUdm1jQWpaOFhzdVlKUEs4cVNEUUtDQVFFQTljSkZHSk9uCk5FY01GWWxCY3dnZGEyM2pzUXVJb2E0WDZzdWJpNWk1VzEzWjZWTHlhWHVOYnE4T3FFTklSNW1mZitmbU15Q0EKMXJPNk5TSTJ2NWNXZUNBV29vMU9DVzFUUmxYYTVqTUZwc1o0TU1BbEJmY2FBRExCRmJtT09tVmhuOXpPY25QWAoxOWtjcmRVVWNYZmp1OXBzQlVVNXNTeHFaTERmR1E4dENmR1pkSDVZK2JzTHQrSENUOEd4aVozam16c05oVFQwCnZmVFRzLzgrYjVRTldjekFIRmFMeUpXcTBoNmpqVGJRalpmcHc1aGdPdmN1aFJWdXdTK2FhSklaWXI5c09vREsKb3BvbDNSOGNMOG1FTW56cytINGw0RUhDVXJMOXVQZ29KYTllSWpxRFpmWEY2U3JlZWYzMTJlUVRxUzR1UGZiVAptdDI4SnpCNklOYXgwd0tDQVFFQXlWc3JiNFJvSzVPZXNkWHRYeXZIZloxeS9nTmxwUUdDeGdIUERYbUw2eEIwCjc0K2c1NVlKbGc4eHhmUm55am1lRHpEYTJ4MmxEakZNR0xDWjJDWWlMRFFtbGxEYVJnTnB1a0l2VEVGdFBGNU8KcjJ3OEVUWXJLNzN5WlhWNnRjTWNkSzFWUlovM0hsWnFxc2FRMnpHRkVLSWZ2UU9TazBQM2FDcG11OUQ3dFZ2UApCQWpSYk1KMENFaVFISnVLRG92VXZKZkZYb1NESDhkdnJTc3NOZFFVV2VxR3R1OE11ajd5bGJEV2NLMnZvQ2EyCkJVQVBVb2QvOWQvczIzeHVRNU9IWVE5cWYxalQzMzYrL0c3NG5Ca21GY0xUK1F6eVd5Mkt1MTRYckVoN2NsY1EKajJnV2tRb2pldGRYdE1LV29tV0RxbGFRVTZnc3dmV0hSNVpjeVpqekV3S0NBUUJSSitnOVozVU4xSEJ2SkRaUwowRmsyd3NFd0ZBajRxMDhHb0ZvclRUSFl0RE5qMDVwdHJ2bFRsY2VYVlRDblJGbmhtU2p4dFVnV25wOWRNSUUzCjM2THg1RmJWTXlpVUFHQkJsOVNEdEZHbmMxNzVhbHBQai93c0dKYWVuL29SMnF6VVo4eGRDMWc1MVY2ZElRSngKUGhBY1Z0TFpJclVjaHZoVGEvMGdmMXgyTGl4b3hkaUlEM2FkTUpaRVZFaFdrNmMzK2RaTEtPT3hYd29TSkxYdgpqc3FoM3ZXSjVpS2ZDSjJ5YVovRTRGY2FpeElOSDJLWDFreXNjaGx5L2s5VlBQblpIREdYV0RTU1lha2pUa1MyCm15dG1xTTV3ZU9mMUdJSWRZVEpjUk1hdE95NHd5M1hjMDc2WmN5aW96RzdGbDRYT2xvdDZ0dW5GK0hkTDBieGkKMzhNMUFvSUJBUUNrbUVZVlRxTG9uQzhwSjdwMkJZOTQrMis0ZklabUw2bjZ1aGZLNkFTY0RrUElZQndqc3QzNwpNRWg3aktJYkNLWlB2SnZxYVgwMjhNMUhrWFR3MzVzbmp5bkx6aVBlLzRNNW9raVBpUndHTVFFWkhOeXRKUjU5CkR6UktBNUpmYWpLa25kd0tvZ3liWEFDdHdNdEFvbVluaHA5ekhxeCtmUnlNcGJ4ODR3UWU2QUY5UnNnS281bTkKKzdMeDc2TVc2TzdwaXhibmdHSy9ZNFBDaG53Sk5HZSthSnZlaGVKZGpIODRKZW5sQ2RWNmtLcFIrRitPRXYxaQp1NzBlWGNTMHNMQUZnMWlHNk5HbzdDNnFvdnZPZmpCSHNZOGRFcHc2TkN3bnBXNnNna09HMyt6RmpVeUZHMGlOCmJlSmYvSUN1RjFWZHRJMGVGV2NnMWRmVGlQSW9TVUxKQW9JQkFFQ2FJOTFTM0FRbTFWenAwSXUraHpIMVJ6TmcKajJNYnpBZTd3VlArMUp5SDE1eExJRGRDTnJnZTNDeVNFTHZ2VG1Ud09kR0tDcS93MEdrUzBrWEhDYkZpYk9qSApDRlI5ZEVQUWVnZXBIZ3Q0bTdaemJzbDVBUStxaTNmcExiU1BwNmp3d2c3RkJWLzhUOHh2eTVKR1h0MmJBbGVGCnAra1NZeTZJb2lCeThCZ25oQXRhR3oyOE5hM3c4WS8vVE1vU0p0ZjJKVmlET0VlOW5QUXlCVWJkTzJPWGRoaGgKMW1HMWVjVGV6b21DaFlyL0xrTkk0MmQwOVFwSXFtbmV4Tk5hbWdpRTNHL0tNSGY0Vk0wVVFWMDY0b1kzellBcQorT0hHR2xnWno0UVpDbnFPNXZOUGhSQXM5NzUzSk1vck13K29JVERUVDBXVk9yaW14QThkUnNqWmovbz0KLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0K
+        kind: Config
+        preferences: {}
+outputs:
+  public_http_endpoint:
+    value: { concat: ['http://', { get_attribute: [vyos_pod, kubernetes, status, pod_ip] } ] }
+  public_rtmp_endpoint:
+    value: { concat: ['rtmp://', { get_attribute: [vyos_pod, kubernetes, status, pod_ip] }, ':1935/stream' ] }
+node_templates:
+  k8s_master:
+    type: cloudify.kubernetes.nodes.Master
+    properties:
+      configuration:
+        file_content: { get_input: k8s_config }
+  iperf_service:
+    type: cloudify.kubernetes.resources.Service
+    properties:
+      definition:
+        metadata:
+          name: iperf-server
+          labels:
+            run: iperf-server
+        spec:
+          clusterIP: 10.254.100.100
+          ports:
+            - port: 5001
+              targetPort: 5001
+              protocol: TCP
+              name: iperf-server
+          selector:
+            app: iperf-server
+          type: ClusterIP
+    relationships:
+      - type: cloudify.kubernetes.relationships.managed_by_master
+        target: k8s_master
+  iperf_pod:
+    type: cloudify.kubernetes.resources.Pod
+    properties:
+      definition:
+        metadata:
+          name: iperf-server
+          labels:
+            app: iperf-server
+          annotations:
+            cni: opencontrail
+        spec:
+          containers:
+            - image: mlabbe/iperf
+              imagePullPolicy: IfNotPresent
+              name: iperf-server
+              command:
+                - /usr/bin/iperf
+              args:
+                - '-s -p 5001 -i 10'
+          restartPolicy: Always
+    relationships:
+      - type: cloudify.kubernetes.relationships.managed_by_master
+        target: k8s_master
+      - type: cloudify.relationships.depends_on
+        target: iperf_service
+  stream_converter_service:
+    type: cloudify.kubernetes.resources.Service
+    properties:
+      definition:
+        metadata:
+          name: stream-converter
+          labels:
+            run: stream-converter
+        spec:
+          clusterIP: 10.254.100.200
+          ports:
+            - port: 80
+              targetPort: 80
+              protocol: TCP
+              name: clients-endpoint
+            - port: 1935
+              targetPort: 1935
+              protocol: TCP
+              name: stream-target
+          selector:
+            run: stream-converter
+          type: ClusterIP
+    relationships:
+      - type: cloudify.kubernetes.relationships.managed_by_master
+        target: k8s_master
+  stream_converter_deploy:
+    type: cloudify.kubernetes.resources.Deployment
+    properties:
+      definition:
+        apiVersion: extensions/v1beta1
+        metadata:
+          name: stream-converter
+        spec:
+          replicas: 1
+          template:
+            metadata:
+              annotations:
+                cni: opencontrail
+              labels:
+                run: stream-converter
+            spec:
+              containers:
+                - name: stream-converter
+                  image: michalskalski/docker-nginx-rtmp
+                  ports:
+                    - containerPort: 80
+                    - containerPort: 1935
+    relationships:
+      - type: cloudify.kubernetes.relationships.managed_by_master
+        target: k8s_master
+      - type: cloudify.relationships.depends_on
+        target: stream_converter_service
+  vyos_pod:
+    type: cloudify.kubernetes.resources.Pod
+    properties:
+      definition:
+        metadata:
+          name: vyos-gateway
+          labels:
+            app: vyos-gateway
+          annotations:
+            cni: 'flannel,opencontrail'
+            multi-ip-preferences: |
+              {
+                "multi_entry": 0,
+                "ips": {
+                  "": {
+                    "ip": "",
+                    "interface": ""
+                  }
+                }
+              }
+            kubernetes.io/target-runtime: virtlet.cloud
+            VirtletCloudInitUserDataScript: |
+              #vyos-config
+              interfaces {
+                  ethernet eth0 {
+                    address dhcp
+                    dhcpv6-options {
+                    }
+                    duplex auto
+                    smp_affinity auto
+                    speed auto
+                  }
+                  ethernet eth1 {
+                    address dhcp
+                    dhcpv6-options {
+                    }
+                    duplex auto
+                    smp_affinity auto
+                    speed auto
+                    traffic-policy {
+                      out IPERF
+                    }
+                  }
+                  loopback lo {
+                  }
+              }
+              nat {
+                  destination {
+                    rule 10 {
+                        destination {
+                          port 80,1935
+                        }
+                        inbound-interface eth0
+                        protocol tcp
+                        translation {
+                          address 10.254.100.200
+                        }
+                    }
+                    rule 20 {
+                        destination {
+                          port 5001
+                        }
+                        inbound-interface eth0
+                        protocol tcp
+                        translation {
+                          address 10.254.100.100
+                        }
+                    }
+                  }
+                  source {
+                    rule 200 {
+                        destination {
+                          address 10.254.0.0/16
+                          port 80,1935,5001
+                        }
+                        outbound-interface eth1
+                        protocol tcp
+                        translation {
+                          address masquerade
+                        }
+                    }
+                  }
+              }
+              protocols {
+                  static {
+                    route 0.0.0.0/0 {
+                        next-hop 10.244.0.1 {
+                        }
+                    }
+                    route 10.254.0.10/32 {
+                        next-hop 10.244.0.1 {
+                        }
+                    }
+                    route 10.254.0.0/16 {
+                        next-hop 10.150.255.254 {
+                        }
+                    }
+                  }
+              }
+              service {
+                  ssh {
+                    port 22
+                  }
+              }
+              system {
+                  config-management {
+                    commit-revisions 20
+                  }
+                  console {
+                    device ttyS0 {
+                        speed 9600
+                    }
+                  }
+                  host-name vyos
+                  login {
+                    user vyos {
+                        authentication {
+                          encrypted-password $1$H/s4nrZs$qmUTDddgBB5K5Ocm97pHC.
+                          plaintext-password ''
+                        }
+                        level admin
+                    }
+                  }
+                  ntp {
+                    server 0.pool.ntp.org {
+                    }
+                    server 1.pool.ntp.org {
+                    }
+                    server 2.pool.ntp.org {
+                    }
+                  }
+                  syslog {
+                    global {
+                        facility all {
+                          level notice
+                        }
+                        facility protocols {
+                          level debug
+                        }
+                    }
+                  }
+                  time-zone UTC
+              }
+              traffic-policy {
+                  shaper IPERF {
+                      bandwidth 10000
+                      class 5 {
+                          bandwidth 2%
+                          ceiling 95%
+                          match IPERF {
+                              ip {
+                                  protocol tcp {
+                                      source {
+                                        port 5001
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                      default {
+                          bandwidth 100%
+                          ceiling 100%
+                      }
+                  }
+              }
+            VirtletSSHKeys: >
+              ssh-rsa
+              AAAAB3NzaC1yc2EAAAADAQABAAABAQDhFfnUDg/6Hpl3iZJ/MacN7tiKt+C+U/cCKnFMnEcXbm/E8Dicb5H7QExyI3kcBD1HSCPsvH6WanIrRutOhdUi1BKQ4B5udjZ2lVN0Xv04JJ0YTshe0TTXNLCs4LmaMhqns1yPyEPXRnapc2FQTQT9RDIPQqZl/Lad2+GXbyOAZ5bLy6CF+pConZlc6APoiwUMaY/o7xm4L/qhwqK5TQ+XKvT8BmIPBSOaRAcgzkeA0+i3m4mrFWmIugEF+ItEs5CUSUnhFFj+D0dqhkWmoau0vwm4i3TenaebzyTRyedGJja6H9y6xpdjoWlOCeOCbq2pMaFHr7r4PuB+4CK3hYvD
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: extraRuntime
+                        operator: In
+                        values:
+                          - virtlet
+            terminationGracePeriodSeconds: 120
+          containers:
+            - image: virtlet.cloud/vyos-cloudinit
+              imagePullPolicy: IfNotPresent
+              name: vyos-gateway
+              tty: true
+              stdin: true
+              resources:
+                limits:
+                  memory: 1600Mi
+          restartPolicy: Always
+    relationships:
+      - type: cloudify.kubernetes.relationships.managed_by_master
+        target: k8s_master
+      - type: cloudify.relationships.depends_on
+        target: stream_converter_service
+      - type: cloudify.relationships.depends_on
+        target: iperf_service

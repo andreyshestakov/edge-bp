@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-pod
+data:
+  nginx.conf: |
+    worker_processes 5;
+    events {
+    }
+    http {
+      server {
+        listen 80 default_server;
+        root /www;
+        index index.html index.htm;
+        disable_symlinks off;
+        # Pass requests about hls to cache servers
+        location ~ \.(m3u8|ts|trp) {
+            proxy_pass http://{{ cache_svc }};
+        }
+        location /_healthz {
+          add_header Content-Type text/plain;
+          return 200 'ok';
+        }
+      }
+    }
+  index.html: |
+      <!DOCTYPE html>
+      <html>
+      <head>
+      <meta charset=utf-8 />
+      <title>client_name stream</title>
+        <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+        <script src="https://unpkg.com/video.js/dist/video.js"></script>
+        <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
+      </head>
+      <body>
+        <h1>Stream service provided for client_name </h1>
+        <video id="my_video_1" class="video-js vjs-default-skin" controls preload="auto" width="640" height="360"
+        data-setup='{}'>
+          <source src="/live/client_name.m3u8" type="application/x-mpegURL">
+        </video>
+        <script>
+        </script>
+      </body>
+      </html>

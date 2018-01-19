@@ -1,0 +1,143 @@
+tosca_definitions_version: cloudify_dsl_1_3
+imports:
+  - 'http://www.getcloudify.org/spec/cloudify/4.1/types.yaml'
+  - >-
+    https://raw.githubusercontent.com/cloudify-incubator/cloudify-kubernetes-plugin/master/plugin.yaml
+inputs:
+  stream_source_endpoint:
+    description: URL to HLS stream source
+    default: http://10.244.0.18
+  k8s_config:
+    description: kubeconfig
+    default:
+        apiVersion: v1
+        clusters:
+          - cluster:
+              certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZ6ekNDQTdlZ0F3SUJBZ0lJV1RoT1ZIS0F0WHN3RFFZSktvWklodmNOQVFFTEJRQXdTakVMTUFrR0ExVUUKQmhNQ1kzb3hGekFWQmdOVkJBTU1EbE5oYkhRZ1RXRnpkR1Z5SUVOQk1ROHdEUVlEVlFRSERBWlFjbUZuZFdVeApFVEFQQmdOVkJBb01DRTFwY21GdWRHbHpNQjRYRFRFNE1ERXdNakUwTVRnek1sb1hEVEkzTVRJek1URTBNVGd6Ck1sb3dTakVMTUFrR0ExVUVCaE1DWTNveEZ6QVZCZ05WQkFNTURsTmhiSFFnVFdGemRHVnlJRU5CTVE4d0RRWUQKVlFRSERBWlFjbUZuZFdVeEVUQVBCZ05WQkFvTUNFMXBjbUZ1ZEdsek1JSUNJakFOQmdrcWhraUc5dzBCQVFFRgpBQU9DQWc4QU1JSUNDZ0tDQWdFQXlQVm9XZ0N6RXhQU2YweHFyaXZBaWRVakYxZ1J4Zi9HdDg4K1NlTTVNVkg2ClFBdmFGWERlQWFuYmZJa2VneWMxa3RxeG9EM212VVU0YnFPVDZOWGxySWtMUCtuWVltRDMrQTFlTXcxZGw2eE8Kb2FsRjBDa1M1MkVJWXl5eW1zblNDZGFaOUcrTzlWellia0ptT3NodG5rdG9kbnFPVnp1ZThOS1g0VW02NG1CaAp1T3pZNHFQR2dSRldOdk92NHBFOTlkQ3FuZStyUlM5SlBLcmJ6Szg3WEptR2tUaGlXalNHeUtPRmxZR3lvNmhNCktubDJWcDJiYzVsMWdIUlJmb0E2ZE1INURmVm5NNTUwTUFLTVpSaHFqa0Vnem1vclhUT2k0TE9pRTJYSDRTVmUKbUtNUmxEcHBnZVJmMmRhU1NCR2IwRzFPVkV0Q1BpYmpjMEdETTZ5c1JFaWdza04rMUdSbytvUnpIWm9tNmFmdAo5UlRPZ2E2eHl6NlZBQzdvQ0gzM3RzU1p6NWVvVTRNZ2NEMWIyVXY0ak5pUEVoNzNKWFNlWU1temhKVXYzM1hTCjllUWNIa0xjWmxkSm1QWjBoRHR0YW1IUkg0cFU5RFFmeDNBa00vTFZyYitkdVlDRVZjMnlDQnd2eDJpSzM3aFYKUXFzcTJYdWNVSktibTJXbkRGNkFId3UzV3U4ZUNLS25YQzNvempRdEZWWFcrY2ZuUnJvQ1lqUDJoN2NPMnVRcwpINjNCTGZCZ3lla3hJMEE4M2llYVdGbHBwNFMwMFZ5SW9Qd1h6cEtqZWljdXdKcjdDWFNCeEQvdUJ6Q1RqVE4vCjR6aXBidmkyUCtYWkNrVjB2aTAzKzA2SHpwc0pUQVJnZTM4eDR4Z0dXcGR5cXkwaFNybUFQY0d5N2xkUnpQTUMKQXdFQUFhT0J1RENCdFRBTUJnTlZIUk1FQlRBREFRSC9NQXNHQTFVZER3UUVBd0lCQmpBZEJnTlZIUTRFRmdRVQpLeGExRFp2QWVpVTdzTWljb0xBN3JrWlBndGN3ZVFZRFZSMGpCSEl3Y0lBVUt4YTFEWnZBZWlVN3NNaWNvTEE3CnJrWlBndGVoVHFSTU1Fb3hDekFKQmdOVkJBWVRBbU42TVJjd0ZRWURWUVFEREE1VFlXeDBJRTFoYzNSbGNpQkQKUVRFUE1BMEdBMVVFQnd3R1VISmhaM1ZsTVJFd0R3WURWUVFLREFoTmFYSmhiblJwYzRJSVdUaE9WSEtBdFhzdwpEUVlKS29aSWh2Y05BUUVMQlFBRGdnSUJBSUFRNlVWNjduOGdCZFVRZThSVnRhby9IdzFiR3N3cDhKVjZ3c2JUClNlTWl2c0JQSHo1TlN6SnkvZUFzd1F2dlRibVdUNGdrNlFnZEZUeWwwakU5dXhyQzVJMzEwd09udGlkTlg2QjYKMVJUWko2TmJkN0pKYUIvRTEzdS9RQzAwMUE1L3F3a0dDQmhPNWlndzdiTHlFaTdvNlpMS3Ezb3hxZ2k0bkg0SApqZzVSSTN0SWlobHk4bWxlOXZ2cEd2clBDdGtTa2NHMjFyM3FoNjRSNWZKdlNkNUNZTkZUT3N2Ync5VzJMWXFnCmRtdmp5YjhmY0s3dHdrMG9FNmNWa0V6NVZpNmNKc2lFU3hZS2UvREZHbGwxVlZTRGtxSVV6WDZGTFdoaWx5dk4KL0pmWDhCMG91cnF1Zy8rMmQ0SnJKUVJEdUl2MWQ5WmlpMlFFeks3WlFxZUg5RFZFTGVwa2FLaWJMTzhMWk45YQpPWTNLVHdibzdoaGZhclRIbk1kQXArS3NTRklZbGtwRW5OUTc4QkFsT2sxT3hVSzNCRFh1RHBzOWQ2UzIwYktGCjZTMklHQjZIclZjdjRIdmlQeEc5dkFjeHQvOHQ2emFoNXpNV2R4R2xqZ0ZpSDZnOXI1ME1VU2I4SU4yOVVMMW0KcE5aY1RTWEQ0UmhtcC9SNjV1V3R4d1A1eGQ5Rk4xTkYwV2hyczEwRG9uMTU3SE8xNjhDSXZlVlE1KzREMGJLRwo2T0JPbFBiU2ROeDQvb0ZxT2ljOFZIZStTZGhUQ3ZiWFhFUnpOS2lvbjBYaDFZYXRMckZpTXlmaWJSMU9CaFRvCitHL0xSZ1NJc3krWUdmK0hvYUFCMUFjdmR5YURKaHFvS0graE1EN1k4MXlrbm5QNHlrS3VaRlZPdEs2V0xaV1UKN290NwotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+              server: 'https://192.168.122.194:443'
+            name: edge01
+        contexts:
+          - context:
+              cluster: edge01
+              user: admin-edge01
+            name: edge01
+        current-context: edge01
+        users:
+          - name: admin-edge01
+            user:
+              client-certificate-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUdHakNDQkFLZ0F3SUJBZ0lKQU8rZFBSR3dpTjZFTUEwR0NTcUdTSWIzRFFFQkN3VUFNRW94Q3pBSkJnTlYKQkFZVEFtTjZNUmN3RlFZRFZRUUREQTVUWVd4MElFMWhjM1JsY2lCRFFURVBNQTBHQTFVRUJ3d0dVSEpoWjNWbApNUkV3RHdZRFZRUUtEQWhOYVhKaGJuUnBjekFlRncweE9EQXhNREl4TlRFek1EUmFGdzB4T1RBeE1ESXhOVEV6Ck1EUmFNR1V4Q3pBSkJnTlZCQVlUQW1ONk1SVXdFd1lEVlFRS0RBeHplWE4wWlcwNmJtOWtaWE14R3pBWkJnTlYKQkFNTUVuTjVjM1JsYlRwdWIyUmxPbXQxWW1Vd01URVBNQTBHQTFVRUJ3d0dVSEpoWjNWbE1SRXdEd1lEVlFRSwpEQWhOYVhKaGJuUnBjekNDQWlJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dJUEFEQ0NBZ29DZ2dJQkFNZ2RRc29OCjZVYVlKbDIydGlGTlNlZVg1WnVXVzNEN2hjYXBlWFhjZ2FEcWh6b0VldGxXKzIxN2JTMldwem1tWVArN1NYeUQKaS9kNDN3cVlTcU03RTNVWFdzTnJzYnprMS9tSVRGNzlZa21JYzQxcUR6T3JtWEF4MUJMT2xZZnE2VmVnOUtzWgowczduUXNCNmJSa3RnNGJwTCsveGEwVUV2N1B3V1ZPVmV1SmNtM1VlakNQdXZmbGRNaFIydHI2WkpCNFg3dEx0ClF5ZzhHWlNkOVQzUDA0SXYwOHRNRXVxNDF5TmdJRFkzcmdBdnVkTWUvMENlY0RsUGU4NXBDQmdZMmlOSDZ3em8KWlpzM2c3eDNSUUxhUXpvVjNsWnIzd1JBTjE5UUpRQVltcExBKzY2Z1U1M1R0UVFGWGg3bnpjdjYvK3RualJVLwphTWE0OU16aXI4S21iREkvcXpWcGo5cUVLZm9YNmlkNTZpbnhXRXVWK3ZzSUhrd2g1d3Zoc0hYVk9hbVMraXg4CmFETGRFemErZW52akh2M2d4Y05KejFjL0tmSG1nelhaUHBKYU9vbGEwYzQ4VzBrQWd6L0FpdnArRldURVNsNnUKckJBNkxHV2hMUnJzMUEwZ01URlVXNDkwQm02NGRCTXZQR0hYSjlZM2ZmY0VMVFZRbS9ER3JwVDVHb1lPYytLOQovWkdPOGcwTWN6dE44QzgvR1lla2xNcy81Q2U3bG9sU3dzcmdWOU02MGxnaSs1WTdOaUdUbnpicjNkb2FQNE4zCldQZHIyQUdNZjNWNEw3dDRwY1ZVRDRmeklMVTU2TzZIZjdUaEVBdE0yV0dkNThPaVZpbTNRaHJSQnEzR3R4T2oKbTJpcWpUa2ZiNjhUSjBQSkhkTzg2NS9QeGtPS1BPbUdiT01uQWdNQkFBR2pnZWN3Z2VRd0NRWURWUjBUQkFJdwpBREFPQmdOVkhROEJBZjhFQkFNQ0JlQXdGZ1lEVlIwbEFRSC9CQXd3Q2dZSUt3WUJCUVVIQXdJd0hRWURWUjBPCkJCWUVGSEJTY0FhS2taZTBJMkVUQnpST1RCR2sxNDhwTUhrR0ExVWRJd1J5TUhDQUZDc1d0UTJid0hvbE83REkKbktDd082NUdUNExYb1U2a1REQktNUXN3Q1FZRFZRUUdFd0pqZWpFWE1CVUdBMVVFQXd3T1UyRnNkQ0JOWVhOMApaWElnUTBFeER6QU5CZ05WQkFjTUJsQnlZV2QxWlRFUk1BOEdBMVVFQ2d3SVRXbHlZVzUwYVhPQ0NGazRUbFJ5CmdMVjdNQlVHQTFVZEVRUU9NQXlIQk1Db2VzS0hCQXJKQUFFd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dJQkFJY3oKMnNoaHYwYmNxdTlzTXQ0MVR4TVUrcmc2Z3JINFpXTUlmVzd4d0RGakh3ZkdtNEppWlArZlM2VzY4bm1XV3l6RgoxQjhzNGRoOVhOeU9wb1U5ZUdXeThJUURLNVZ1V0piWHZiVE12d2Y2bFRlU1Qvd29WdnVyMFpYLzJSZHUwbVRsCkpsQ091TFJ3OHJrUWpHSDd6UWM2NDhybkF0eHo5UHhsZGdiMmRWY05hN25FVms4N3R4c3dnQnBpbFd6aE1WdjkKSit2OExzK3MvdUczeXZZWGRZQ2hNWUJsVVBpTWQzLzdQdGg2dmQvclZEZkhiYWxOOFhDT0ZSL3ZkZ1orL1VhTQpLa2ZUVExUZ0cwNjRWS1RsSm1YWW03cS9ubEExMnBVdVRSaW4rYzVCNmVMZ0c0anhqaHdkYm5iUGJySlhWV25qCldTaldrZS9Wc3czdHhJVGo0WGpHdVBzSUVyWjdRSXJUVm4wWUhkNVFCd2RhalArckRVdUlQOXd4UjRmYnFORisKUjNQUURqSUF2L3M1S2xEd0xyVjJad2pzNk9JRzkwb3FjOFBrRCtxQUkyNUpkTWdWcG1YWVhrdjJoeWx2K1kyMAorWEFGM3M1UFBGNjZnelg1bG1PcXY3TTR1TmNDN0Y2ZmxCNnpiaVRNeWNKUm84YlAyci9YTEQxcU5DZEVvUlk0CkpYdzhxdVZwL2JtbUNuVTZlYXhNa3FCMUdVYTg1MUxzQUt2N2k5QlZ5UElxaUwvalowejI5eE83TjIyMXhFOFgKaXhJWU55KzlBSXhYb2l1elNJWDlxTEh5aTQvUkNBYnVWWHFUdGhMYmZMT3EvUGQxVW5Gb3MyaEhLRnRMNW5VMgo5QlN4NGNYTFI2aktiSWc4VjBDbzE5NlgzWnNhWGFCaGlJdGZZQmxtCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+              client-key-data: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlKS1FJQkFBS0NBZ0VBeUIxQ3lnM3BScGdtWGJhMklVMUo1NWZsbTVaYmNQdUZ4cWw1ZGR5Qm9PcUhPZ1I2CjJWYjdiWHR0TFphbk9hWmcvN3RKZklPTDkzamZDcGhLb3pzVGRSZGF3MnV4dk9UWCtZaE1YdjFpU1loempXb1AKTTZ1WmNESFVFczZWaCtycFY2RDBxeG5TenVkQ3dIcHRHUzJEaHVrdjcvRnJSUVMvcy9CWlU1VjY0bHliZFI2TQpJKzY5K1YweUZIYTJ2cGtrSGhmdTB1MURLRHdabEozMVBjL1RnaS9UeTB3UzZyalhJMkFnTmpldUFDKzUweDcvClFKNXdPVTk3em1rSUdCamFJMGZyRE9obG16ZUR2SGRGQXRwRE9oWGVWbXZmQkVBM1gxQWxBQmlha3NEN3JxQlQKbmRPMUJBVmVIdWZOeS9yLzYyZU5GVDlveHJqMHpPS3Z3cVpzTWorck5XbVAyb1FwK2hmcUozbnFLZkZZUzVYNgord2dlVENIbkMrR3dkZFU1cVpMNkxIeG9NdDBUTnI1NmUrTWUvZURGdzBuUFZ6OHA4ZWFETmRrK2tsbzZpVnJSCnpqeGJTUUNEUDhDSytuNFZaTVJLWHE2c0VEb3NaYUV0R3V6VURTQXhNVlJiajNRR2JyaDBFeTg4WWRjbjFqZDkKOXdRdE5WQ2I4TWF1bFBrYWhnNXo0cjM5a1k3eURReHpPMDN3THo4Wmg2U1V5ei9rSjd1V2lWTEN5dUJYMHpyUwpXQ0w3bGpzMklaT2ZOdXZkMmhvL2czZFk5MnZZQVl4L2RYZ3Z1M2lseFZRUGgvTWd0VG5vN29kL3RPRVFDMHpaCllaM253NkpXS2JkQ0d0RUdyY2EzRTZPYmFLcU5PUjl2cnhNblE4a2QwN3pybjgvR1E0bzg2WVpzNHljQ0F3RUEKQVFLQ0FnRUFpZkZoc05hV0QwdWlac2NrRlNDcDZUTVQyNFJ4MUJnTnh6dmJ0aHNpWUVKS3BQdWhrMkFhUVFYcgo1SmtNL1BocnROenRjeDlheEdSVm00QVBNeVh0NjdFRnA5Lzh6VEVTajdnY3JQNE5XcExzMUhaZnRFWjlwcEV5Cmx5UkFmMGkzUU9oNnY5YzFNZHJJY05YempuK0pRdDVMWlNNTnhxM1hWN28rV1JlWmRhQlFxUk05bHlkalhSbVoKQS9JeFZvRktIRlJ6RklMbzREdE5odHk3eUxnU0hKUExjMEFsYWhld2RYbzF1aW4zajdsV1p1bmZHalFkTitSSwplNlo3SmVFN3ZVWStDTS9KK296eUNtQk0rZ0pxaFFlK0UrU1gvdDRsVFZaNXF1OUszZzZaYjI2bE5RNVNvVXJ4CjdtdnJ1TWgwMFZpNE1BVmR2RjZTb1FsQ0R2T1pjSEhXRmkyQncraE8xUDUweGxtMDc0SFJkN2k5SlloMXBTSnoKNG1iaGpoQVUyVnRlVkpVK1JoVUNBVEFHMWhZZGhPVTdPaHdzb2NoVEhEck9QdEZqa24xdGQ2WXhLNFFBeGdhKwpQV1BSOXhGak51RDhBWjI0bnJjTkt0a0xKejZZT3lydmo0S2JzVjlMSzVwNkR2dXNhVkx6UFJ2NW52V0NCNW1ICldQVSthQm5SUzdTVVdDZTN0VVNGMGkrVnNxVjBLSllveGR6UVM1N3BnenArVjNVaDU2SlB2SUR6S0FxTUdlNUgKV0N6akFlcTBRSEo0LzhZVmFMMUMwdm5NdnNvcDM2Q1Rtb2l0NXlHU3czYXoyekNDaXdZU3BlU3ExRGdvbm1WQgpmazluK0dRNkhsTGRJMS8yaThPeHcrU0FqYloxWGpQWGNkeTNNYUxIOUFtYjNKaGZSd0VDZ2dFQkFPUENSL2JIClhmbGd4S2RjRjN3WEEyT3J0MlNKYU1weld0RUU3NHd4T3pWUGMzR2NQOVo2amkzOGpSTjZVc2hRMHlkUHpOSEUKdFVOQ0xKd045dUs5RHNNb3p5dEZJYUwxV3pZcXE5d21zSzNhNXl5Mm5zRnpJdStOeUYwUmtNYU80dFFqZDhxdApQR2xrNEsvL2NaN1dLWTE5a2M0MlpZUThKdTVCRWNUTkRpZTJUdXZ1YmVyTXdUR3NlRzF6M3d1MHNXMlJJN2VkClZQWkt5RitYVVp2YkE0U3V0NUt0aGRJSU1MMTVLcnplRDNmTHRYUVlJbTI4MUZNL2VjWjdweWp0U1oySDVwSlMKRFBtaVp1U1U0NGg2clY1Y3Zyazl0RkxVbDlreDR0dzFUV0tOa3o0VCtPNUUyVUtjRUR0K3pBcEZtNWFlNWxHVAozUDh3UDloelRzazdwRmNDZ2dFQkFPRHRkZmt5dmF6UTdrZnRBbkgvS2JCQ0lGcE9vUEZPdjAvczZ2N0FRVWVLCjlQd0RlOVpmdXNuS0prZHlqR2NzSUhhaldIdm02OW1hOHd0aWQvTVhvem81MGFYZHVLeU0wRk9BZmswMUNMMkoKdTRva1dZMlp4N1lzdVp3Y29FTXlOS2tidzY0b0VZUnEwZ3dNMm8rKzBiTnl4ei9DMEhrdWFNSjM5aG9Bak16OApkZGZ5YVhmdk82VStqNllwTU5zOW9oNGpvc1dnbVp0bHhUOC9GUGdXY2crdlI3ZW1ZVVJIZHh6T3B6VndWS29IClNsKytBclA5aFZHOTFyZ0NJQTE1OS9CKzlTQ2ZELzFob0dFUzE1dTB4THI1QzUzOFJ6cmRBVjJGRnU3SHEyaEwKSHVjamRFM3J1NHhuaDFTZG1Kb29xeTZ6ZTNqTkRJUXdoTXZhNHdXLzliRUNnZ0VBUThySlJ0QVN6YTZhK2tHMApEOUI5eHNZTzRWTHhLUWxxNTdvelh5UXNQbkwycHNOZVVRWExtaTZKQTFvdWw4ZFBBbTJEUnBEcGJ5cWNRcHI1CmVJWFRoZzE0bEtXUUhJUXhjUThFZHBQaGxPNEtUMG5RT1Q1L0VKVEFKY3Vicnk1S24rQXF3TjRObEVWZGg2VmQKK1d3L2xBampSR0QybUlTYkJlSENXelM1Mk9JdjNaUHJqYThDZGptaTR0bFJjNWVHRkZuV0tzb2V4dXg5ZGM2QgprUVdBcDVhbHQzZ0UwLzV5RzRPY1QvazgyMmg4Q3lFLzVqQUZkdjMyempoeUNnR1BIdCticHNQYmJ0YUREOWl0ClhTcyt2VTZYeW1WdWJoVXZXWXU2dmRiendManBNZG9hQnpuZy9TMmN1MGpEak84cEg0ME9ld3VyQlI0a2N0WG4KaG9oRkl3S0NBUUE4MmNFcTA4Rmd1WDFkVkE5dlM3cTVob28rSkR1Q1RPMlE3K1Y3V2dQUEdSYkIveWRIamNwNAp3UW11RnAxSlpEUzhJK0RTVkZ6R0dCZGNveDBVVlBiQno5YVo2dXdGTW10QnkrZGZkOU9QZzIyTEo5NWFZcG9XCi9PNlIvMlNVQ1VjWjRQc0ZhSzJraDBtZ0hQSWNKV0dTREtFKzdMTjl0VUorS2ZvWWVzR2N5MGdPVGZTZWo4Z3gKSWtXMmpEbzlkZVVnQmtBSSt6UFRTS3NlT3pDdkZWTnlUdGMySmZyMmYrY0hraGpHYWtkZFlHK01pMWtyM0pCdQoxczc2SlFrSzNFNXBiODlkTGVzamYzL21BelQxV09oSU5Rd2hoNWkxb2dpMmhrVDRBR2lzNUhYTnpsZXVwUEd1ClFHdnFSbUI4aERnYmdFOE5GVnduZndET0xiOXhWTWRoQW9JQkFRQ01KeGJSU0wrUUx0WWlDSE5kbWVTaDlXYTMKa29haUowRW82bDZLM3Iwc2dzc3VNR0lTTHZVeTZ3SGlUNnRqcFRWOHZKd04ybSt6N2xwVmFLMEdiNFJ6NFBoRQpVWllMVzFSekN2d0svWUhuKzBXMXZMME4vdmd6QWFaZXhpMHZrWFpPQ0NWU0ZvQ3hOQkNUY1dzTlhIU0xwL1pCCmdSSkdaTGxhSHlNNDA4WWtZL3VxQkhVelc3MzBOaHB1Mm9JV1Q2U0dPbFJZc2VIZURoa2k1Nk5MdmJaeXc3cFoKMHFwNU8rVklKOTUwSWVkcUQ4K3FFeDRXZzlKckgxMExtMUdkbWVIWVFvbnhJUzJ0RC9yeEpZdWcrRWhVcHdUSApsS0lyaWt6NGM1N3JaR3lHWGRHYnNlWGN3Y3M4ZVFmUFZMb1RxUzlOajdKZHdtZStjUndtUW5DK3F0eWEKLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0K
+        kind: Config
+        preferences: {}
+outputs:
+  frontend_endpoint:
+    value: { get_attribute: [frontend_pod, kubernetes, metadata, annotations, multi-ip-preferences] }
+node_templates:
+  k8s_master:
+    type: cloudify.kubernetes.nodes.Master
+    properties:
+      configuration:
+        file_content: { get_input: k8s_config }
+  stream_cache_service:
+    type: cloudify.kubernetes.resources.Service
+    properties:
+      definition:
+        metadata:
+          name: stream-cache
+          labels:
+            run: stream-cache
+        spec:
+          ports:
+            - port: 80
+              targetPort: 80
+              protocol: TCP
+          selector:
+            run: stream-cache
+          type: ClusterIP
+    relationships:
+      - type: cloudify.kubernetes.relationships.managed_by_master
+        target: k8s_master
+  stream_cache_deploy:
+    type: cloudify.kubernetes.resources.Deployment
+    properties:
+      definition:
+        apiVersion: extensions/v1beta1
+        metadata:
+          name: stream-cache
+        spec:
+          replicas: 1
+          template:
+            metadata:
+              annotations:
+                cni: calico
+              labels:
+                run: stream-cache
+            spec:
+              containers:
+                - name: stream-cache
+                  image: michalskalski/docker-nginx-rtmp:frontend
+                  ports:
+                    - containerPort: 80
+                  volumeMounts:
+                    - mountPath: /tmp/hls
+                      name: cache-volume
+                  env:
+                    - name: HLS_STREAM_SOURCE
+                      value: { get_input: stream_source_endpoint }
+              volumes:
+                - name: cache-volume
+                  emptyDir:
+                    medium: "Memory"
+    relationships:
+      - type: cloudify.kubernetes.relationships.managed_by_master
+        target: k8s_master
+      - type: cloudify.relationships.depends_on
+        target: stream_cache_service
+  frontend_config:
+    type: cloudify.kubernetes.resources.FileDefinedResource
+    properties:
+      file:
+        resource_path: resources/nginx_config.yaml
+        template_variables:
+          cache_svc: { get_attribute: [stream_cache_service, kubernetes,  spec, cluster_ip] }
+    relationships:
+      - type: cloudify.kubernetes.relationships.managed_by_master
+        target: k8s_master
+      - type: cloudify.relationships.depends_on
+        target: stream_cache_service
+  frontend_pod:
+    type: cloudify.kubernetes.resources.Pod
+    properties:
+      definition:
+        metadata:
+          name: frontend-pod
+          annotations:
+            cni: "calico,flannel"
+            multi-ip-preferences: '{"ips": {}}'
+        spec:
+          containers:
+          - name: frontend-pod
+            image: nginx:1.10-alpine
+            volumeMounts:
+            - name: config-volume
+              mountPath: /etc/nginx
+            - name: site
+              mountPath: /www
+          volumes:
+          - name: config-volume
+            configMap:
+              name: nginx-pod
+              items:
+              - key: nginx.conf
+                path: nginx.conf
+          - name: site
+            configMap:
+              name: nginx-pod
+              items:
+              - key: index.html
+                path: index.html
+    relationships:
+      - type: cloudify.kubernetes.relationships.managed_by_master
+        target: k8s_master
+      - type: cloudify.relationships.depends_on
+        target: frontend_config
