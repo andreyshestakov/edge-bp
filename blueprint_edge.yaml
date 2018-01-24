@@ -4,6 +4,9 @@ imports:
   - >-
     https://raw.githubusercontent.com/cloudify-incubator/cloudify-kubernetes-plugin/master/plugin.yaml
 inputs:
+  authorized_key:
+    description: Public SSH key for VM
+    default: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCc/GEY7kYnBkZ+van20t1uyewfwTGAZsnxfoNaF3Mww0p3LA543lYsbDw3jrg/TrUyOe4sWXkoOIhuRJirV/sm16cuK952e7i6fAC7RJeFbLBLPh5ONEt0PROH17R7rztZZhh8+3w+7i+QB8IxRPTerpg7nSgRSjFSe7I4Ems8IitFL/wy6P6UNEIblP7N9bne+Eg+kt+BxZ2SaYq6QtVhMCJJFzCYDV45+3WmlgkoaE34mx5OEpLWO/9ILNAOvyoHZMMjD/kd0y+DQ/XdXZm+Hys3CZ9o+lZ1joxKKvoEa6mPhb1oojwxpF9xHEX+JZ9He1ZZDDbIA49gkkpjsJQx
   stream_source_endpoint:
     description: URL to HLS stream source
     default: http://10.244.0.18
@@ -141,3 +144,46 @@ node_templates:
         target: k8s_master
       - type: cloudify.relationships.depends_on
         target: frontend_config
+  ubuntu_vm:
+    type: cloudify.kubernetes.resources.Pod
+    properties:
+      definition:
+        metadata:
+          name: ubuntu-vm
+          annotations:
+            cni: "calico,flannel"
+            multi-ip-preferences: |
+              {
+                "multi_entry": 0,
+                "ips": {
+                  "": {
+                    "ip": "",
+                    "interface": ""
+                  }
+                }
+              }
+            kubernetes.io/target-runtime: virtlet.cloud
+            VirtletSSHKeys: { get_input: authorized_key }
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: extraRuntime
+                    operator: In
+                    values:
+                    - virtlet
+          terminationGracePeriodSeconds: 120
+          containers:
+          - name: ubuntu-vm
+            image: virtlet.cloud/cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+            imagePullPolicy: IfNotPresent
+            tty: true
+            stdin: true
+            resources:
+              limits:
+                memory: 1600Mi
+    relationships:
+      - type: cloudify.kubernetes.relationships.managed_by_master
+        target: k8s_master
