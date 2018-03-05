@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  images.yml: |
+    translations:
+      - name: vyos-cloudinit
+        url: http://192.168.10.90/vyos.qcow2
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+  name: virtlet-image-translations
+  namespace: kube-system
